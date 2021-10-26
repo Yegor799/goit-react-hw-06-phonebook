@@ -1,4 +1,8 @@
-export default function Filter({ value, onChange }) {
+import { connect } from "react-redux";
+import * as contactActions from "../../redux/contacts/contacts-actions";
+
+
+function Filter({onChange }) {
     return (
         <>
             <p>Find contacts by name</p>
@@ -6,10 +10,16 @@ export default function Filter({ value, onChange }) {
                 <input
                     type="text"
                     name="filter"
-                    value={value}
                     onChange={onChange}
                 />
             </label>
         </>
     )
 }
+
+const mapDispatchToProps = dispatch => ({
+    onChange: e => dispatch(contactActions.filterContacts(e.target.value)),
+});
+
+export default connect(null, mapDispatchToProps)(Filter);
+

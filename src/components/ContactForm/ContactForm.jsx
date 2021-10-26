@@ -1,25 +1,33 @@
 import "./ContactForm.css";
 import { useState } from "react";
+import { connect } from "react-redux";
+import * as contactsActions from "../../redux/contacts/contacts-actions"
 
-export default function ContactForm({ onSubmit }) {
+ function ContactForm({contacts, addContact}) {
 
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
 
-    const handleNameChange = e => {
-        setName(e.target.value);
-    }
+     const handleNameChange = e => {
+         setName(e.target.value);
+     };
 
-    const handleNumberChange = e => {
-        setNumber(e.target.value);
-    }
+     const handleNumberChange = e => {
+         setNumber(e.target.value);
+     };
+     
+     const onSubmit = (name, number) => {
+         const duplicateName = contacts.find(contact => contact.name === name);
+         duplicateName ? alert(`${name} is already in contacts`) : addContact(name, number);
+     };
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        onSubmit(name, number);
-        setName('');
-        setNumber('');
-    }
+     const handleSubmit = e => {
+         e.preventDefault();
+         onSubmit(name, number);
+         setName('');
+         setNumber('');
+     };
+     
     return (
         <form onSubmit={handleSubmit} className="ContactForm">
             <p>Name</p>
@@ -51,4 +59,14 @@ export default function ContactForm({ onSubmit }) {
             <button type="submit" className="ContactForm__button">Add contact</button>
         </form>
     )
-}
+ }
+
+const mapStateToProps = state => ({
+    contacts: state.contacts.items,
+});
+
+const mapDispatchToProps = dispatch => ({
+    addContact: (name, number) => dispatch(contactsActions.addContact(name, number)) 
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
